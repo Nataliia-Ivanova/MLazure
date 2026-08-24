@@ -1,0 +1,390 @@
+﻿@model BodyFat.Models.BodyFatInputModel
+
+@{
+    ViewData["Title"] = "Прогноз відсотка жиру";
+}
+
+<style>
+    :root {
+        --bg-main: #f0f7f4;
+        --card-bg: #ffffff;
+        --primary-accent: #3a7563;
+        --secondary-accent: #2c5282;
+        --border-color: #cbd5e0;
+        --text-color: #2d3748;
+    }
+
+    body {
+        background-color: var(--bg-main);
+        color: var(--text-color);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-container {
+        max-width: 920px;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+
+    .card-custom {
+        background-color: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        padding: 35px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .header-title {
+        color: var(--secondary-accent);
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .preset-section {
+        background-color: #f8fafc;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 25px;
+        margin-bottom: 20px;
+        border: 1px dashed var(--border-color);
+    }
+
+    .preset-title {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .btn-preset {
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid transparent;
+        padding: 8px 18px;
+        border-radius: 8px;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+    }
+
+    .btn-preset-low {
+        background-color: rgba(49, 151, 149, 0.15);
+        color: #234e52;
+        border-color: rgba(49, 151, 149, 0.3);
+    }
+
+        .btn-preset-low:hover {
+            background-color: rgba(49, 151, 149, 0.3);
+            color: #1a365d;
+        }
+
+    .btn-preset-norm {
+        background-color: rgba(49, 130, 206, 0.15);
+        color: #2b6cb0;
+        border-color: rgba(49, 130, 206, 0.3);
+    }
+
+        .btn-preset-norm:hover {
+            background-color: rgba(49, 130, 206, 0.3);
+            color: #1a365d;
+        }
+
+    .btn-preset-high {
+        background-color: rgba(229, 62, 62, 0.15);
+        color: #9b2c2c;
+        border-color: rgba(229, 62, 62, 0.3);
+    }
+
+        .btn-preset-high:hover {
+            background-color: rgba(229, 62, 62, 0.3);
+            color: #742a2a;
+        }
+
+    .form-group-label {
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: #4a5568;
+        margin-bottom: 5px;
+    }
+
+    .form-control-custom {
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        padding: 8px 12px;
+        font-size: 0.95rem;
+    }
+
+        .form-control-custom:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(58, 117, 99, 0.15);
+        }
+
+    .btn-submit {
+        background-color: var(--primary-accent);
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 12px 30px;
+        border-radius: 10px;
+        border: none;
+        width: 100%;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        box-shadow: 0 4px 12px rgba(58, 117, 99, 0.25);
+    }
+
+        .btn-submit:hover {
+            background-color: #2d5d4f;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.99);
+        }
+
+    .result-section {
+        margin-top: 35px;
+        padding-top: 25px;
+        border-top: 2px dashed #e2e8f0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .result-card {
+        padding: 25px;
+        border-radius: 14px;
+        text-align: center;
+        transition: all 0.3s ease;
+        max-width: 450px;
+        width: 100%;
+    }
+
+        .result-card.result-low {
+            background-color: rgba(49, 151, 149, 0.15);
+            border: 2px solid rgba(49, 151, 149, 0.5);
+            color: #234e52;
+        }
+
+            .result-card.result-low .result-value {
+                color: #234e52;
+            }
+
+        .result-card.result-norm {
+            background-color: rgba(49, 130, 206, 0.15);
+            border: 2px solid rgba(49, 130, 206, 0.5);
+            color: #2b6cb0;
+        }
+
+            .result-card.result-norm .result-value {
+                color: #2b6cb0;
+            }
+
+        .result-card.result-high {
+            background-color: rgba(229, 62, 62, 0.15);
+            border: 2px solid rgba(229, 62, 62, 0.5);
+            color: #9b2c2c;
+        }
+
+            .result-card.result-high .result-value {
+                color: #9b2c2c;
+            }
+
+        .result-card.placeholder {
+            background-color: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            color: #a0aec0;
+        }
+
+    .result-title-label {
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .result-value {
+        font-size: 3.2rem;
+        font-weight: 800;
+        line-height: 1.1;
+    }
+
+    .error-box {
+        margin-top: 25px;
+        padding: 15px;
+        border-radius: 10px;
+        background-color: #fff5f5;
+        border: 1px solid #feb2b2;
+        color: #c53030;
+    }
+</style>
+
+<div class="main-container">
+    <div class="card-custom">
+        <h2 class="header-title">Прогноз відсотка жиру в організмі</h2>
+
+        <form asp-action="Index" method="post">
+            <!-- Блок полів введення даних -->
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="Age" class="form-group-label"></label>
+                    <input asp-for="Age" type="number" class="form-control form-control-custom" id="inputAge" />
+                    <span asp-validation-for="Age" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="WeightKg" class="form-group-label"></label>
+                    <input asp-for="WeightKg" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputWeight" />
+                    <span asp-validation-for="WeightKg" class="text-danger small"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="HeightCm" class="form-group-label"></label>
+                    <input asp-for="HeightCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputHeight" />
+                    <span asp-validation-for="HeightCm" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="NeckCm" class="form-group-label"></label>
+                    <input asp-for="NeckCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputNeck" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ChestCm" class="form-group-label"></label>
+                    <input asp-for="ChestCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputChest" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="AbdomenCm" class="form-group-label"></label>
+                    <input asp-for="AbdomenCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputAbdomen" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="HipCm" class="form-group-label"></label>
+                    <input asp-for="HipCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputHip" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ThighCm" class="form-group-label"></label>
+                    <input asp-for="ThighCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputThigh" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="KneeCm" class="form-group-label"></label>
+                    <input asp-for="KneeCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputKnee" />
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="AnkleCm" class="form-group-label"></label>
+                    <input asp-for="AnkleCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputAnkle" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="BicepsCm" class="form-group-label"></label>
+                    <input asp-for="BicepsCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputBiceps" />
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ForearmCm" class="form-group-label"></label>
+                    <input asp-for="ForearmCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputForearm" />
+                </div>
+
+                <div class="col-md-4 offset-md-4">
+                    <label asp-for="WristCm" class="form-group-label"></label>
+                    <input asp-for="WristCm" type="text" inputmode="decimal" class="form-control form-control-custom" id="inputWrist" />
+                </div>
+            </div>
+
+            <!-- Блок автозаповнення -->
+            <div class="preset-section">
+                <div class="preset-title">Автоматичне заповнення тестовими даними:</div>
+                <div class="d-flex justify-content-center gap-2 flex-wrap">
+                    <button type="button" class="btn-preset btn-preset-low" onclick="fillPreset('low')">
+                        Низький відсоток
+                    </button>
+                    <button type="button" class="btn-preset btn-preset-norm" onclick="fillPreset('norm')">
+                        Нормальний відсоток
+                    </button>
+                    <button type="button" class="btn-preset btn-preset-high" onclick="fillPreset('high')">
+                        Підвищений відсоток
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn-submit">
+                    Розрахувати
+                </button>
+            </div>
+        </form>
+
+        <!-- Вікно результату -->
+        <div class="result-section">
+            @if (ViewBag.Result != null)
+            {
+                string categoryClass = ViewBag.ResultCategory switch
+                {
+                    "low" => "result-low",
+                    "high" => "result-high",
+                    _ => "result-norm"
+                };
+
+                <div class="result-card @categoryClass">
+                    <div class="result-title-label">Прогнозований відсоток жиру в організмі:</div>
+                    <div class="result-value">@ViewBag.Result%</div>
+                </div>
+            }
+            else
+            {
+                <div class="result-card placeholder">
+                    <div class="result-title-label" style="color: #a0aec0;">Результат розрахунку</div>
+                </div>
+            }
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-box">
+                <strong>Помилка під час звернення до Azure Endpoint:</strong>
+                <div>@ViewBag.Error</div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function fillPreset(type) {
+        if (type === 'low') {
+            document.getElementById('inputAge').value = 23;
+            document.getElementById('inputWeight').value = '69.5';
+            document.getElementById('inputHeight').value = '180.0';
+            document.getElementById('inputNeck').value = '36.5';
+            document.getElementById('inputChest').value = '93.0';
+            document.getElementById('inputAbdomen').value = '76.5';
+            document.getElementById('inputHip').value = '93.0';
+            document.getElementById('inputThigh').value = '54.0';
+            document.getElementById('inputKnee').value = '36.0';
+            document.getElementById('inputAnkle').value = '21.5';
+            document.getElementById('inputBiceps').value = '32.0';
+            document.getElementById('inputForearm').value = '27.5';
+            document.getElementById('inputWrist').value = '17.2';
+        } else if (type === 'norm') {
+            document.getElementById('inputAge').value = 32;
+            document.getElementById('inputWeight').value = '78.0';
+            document.getElementById('inputHeight').value = '176.0';
+            document.getElementById('inputNeck').value = '38.0';
+            document.getElementById('inputChest').value = '98.0';
+            document.getElementById('inputAbdomen').value = '85.0';
+            document.getElementById('inputHip').value = '98.0';
+            document.getElementById('inputThigh').value = '58.0';
+            document.getElementById('inputKnee').value = '38.0';
+            document.getElementById('inputAnkle').value = '22.5';
+            document.getElementById('inputBiceps').value = '33.0';
+            document.getElementById('inputForearm').value = '28.0';
+            document.getElementById('inputWrist').value = '18.0';
+        } else if (type === 'high') {
+            document.getElementById('inputAge').value = 48;
+            document.getElementById('inputWeight').value = '102.0';
+            document.getElementById('inputHeight').value = '174.0';
+            document.getElementById('inputNeck').value = '42.0';
+            document.getElementById('inputChest').value = '114.0';
+            document.getElementById('inputAbdomen').value = '108.0';
+            document.getElementById('inputHip').value = '112.0';
+            document.getElementById('inputThigh').value = '66.0';
+            document.getElementById('inputKnee').value = '41.0';
+            document.getElementById('inputAnkle').value = '24.5';
+            document.getElementById('inputBiceps').value = '37.0';
+            document.getElementById('inputForearm').value = '31.0';
+            document.getElementById('inputWrist').value = '19.0';
+        }
+    }
+</script>
